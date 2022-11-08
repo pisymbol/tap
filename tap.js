@@ -127,8 +127,7 @@ function tapFetchSync(url) {
       resp = fetchSync(url);
       if (resp.status === 200)
         return resp.text();
-      else if (resp.status === 429)
-        sleep(TAP_RETRY_MS);
+      sleep(TAP_RETRY_MS);
     } catch (err) {
       logger.error(err);
     }
