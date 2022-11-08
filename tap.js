@@ -227,7 +227,6 @@ async function searchCmd(options, cmd) {
           ad['year'] = titleSplit[0];
           const priceArea = $(element).find('.txt-price');
           ad['price'] = $(priceArea).text().trim();
-          //ad['price'] = (ad['price'] !== 'Not Listed') ? parseFloat(ad['price'].replace(/[\$,]/g, '')) : ad['price'];
           const regArea = $(element).find('.txt-reg-num');
           ad['registration'] = $(regArea).text().trim().replace(/Reg#\s*/g, '');
           const ttArea = $(element).find('.txt-total-time');
@@ -272,7 +271,7 @@ async function searchCmd(options, cmd) {
 const tap = new Command();
 tap
   .name('tap')
-  .description('Trade-a-Plane CLI Tool')
+  .description('Trade-a-Plane')
   .version('0.1.0')
   .addOption(new Option('-d, --debug', 'debug output'))
   .hook('preSubcommand', async (thisCommand, subCommand) => {
@@ -294,7 +293,7 @@ search
  .addOption(new Option('-m, --make <make>', 'make'))
  .addOption(new Option('-o, --model <model>', 'model'))
  .addOption(new Option('-g, --model-group <group>', 'model group'))
- .addOption(new Option('-y, --year <year>', 'year'))
+ .addOption(new Option('-y, --year <year>', 'year range'))
  .addOption(new Option('-p, --price <price>', 'price range'))
  .addOption(new Option('-l, --total-time <time>', 'total time range'))
  .addOption(new Option('--sort <sort>', 'sort key').choices(['days_since_update', 'price', 'make', 'model', 'year', 'overhaul1_time', 'total_time']))
@@ -311,7 +310,7 @@ search
    }
  });
 
-const category = tap.command('category').alias('c').description('List Category Levels');
+const category = tap.command('category').alias('c').description('List Categories');
 category
  .addOption(new Option('-t, --type <type>', 'category level').choices(TAP_TYPES).default(TAP_TYPES[0]))
  .addOption(new Option('-l, --level <level>').choices(['1', '2']).default('1'))
