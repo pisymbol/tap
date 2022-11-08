@@ -1,4 +1,4 @@
-# Trade-a-Plane (tap)
+# Trade-A-Plane (tap)
 
 **tap** is a NodeJS command-line interface to the [Trade-A-Plane](https://www.trade-a-plane.com/) advanced search engine page.
 
