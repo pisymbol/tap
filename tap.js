@@ -223,7 +223,7 @@ async function searchCmd(options, cmd) {
             }
           });
           const titleSplit = ad['title'].split(' ');
-          ad['year'] = _.isNaN(parseInt(titleSplit[0])) ? 'Not Listed' : titleSplit[0];
+          ad['year'] = isNaN(titleSplit[0]) ? 'Not Listed' : titleSplit[0];
           const priceArea = $(element).find('.txt-price');
           ad['price'] = $(priceArea).text().trim();
           const regArea = $(element).find('.txt-reg-num');
