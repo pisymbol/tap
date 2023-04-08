@@ -30,6 +30,7 @@ const TAP_TYPES = [
 ];
 
 const NOW = Date.now();
+let SHUTDOWN = false;
 
 function parseRange(range) {
   let min;
@@ -120,16 +121,16 @@ function sleep(ms) {
 function tapFetchSync(url) {
   // TaP has severe rate-throttling so everything is synchronous with
   // three second back-off.
-  logger.debug(`fetching ${url} ...`);
   let resp;
   for (let i = 0; i < TAP_MAX_RETRIES; ++i) {
     try {
+      logger.debug(`fetching ${url} retries: ${i} ...`);
       resp = fetchSync(url);
       if (resp.status === 200)
         return resp.text();
       sleep(TAP_RETRY_MS);
     } catch (err) {
-      logger.error(err);
+      shutdown(err);
     }
   }
 
@@ -138,10 +139,11 @@ function tapFetchSync(url) {
 }
 
 async function shutdown(err) {
-  if (err) {
+  logger.debug("shutdown hook called ...");
+  SHUTDOWN = true;
+  if (err)
     logger.error(err);
-    process.exit(-1);
-  }
+  process.exit(-1);
 }
 
 async function categoryCmd(options, cmd) {
@@ -190,12 +192,17 @@ async function searchCmd(options, cmd) {
 
       // We run this loop synchronously since TaP enforces some rate-limiting (429)
       for (const url of fetchURLs.slice(1, fetchURLs.length)) {
+        if (SHUTDOWN)
+          return;
         fetchTexts.push(tapFetchSync(url));
       }
 
       logger.debug(`scraped ${totalPages} pages ...`);
       let resultsProcessed = 0;
       for (const body of fetchTexts) {
+        if (SHUTDOWN)
+          return;
+
         const $ = cheerio.load(body);
 
         // Parse the entire result listing
@@ -237,6 +244,8 @@ async function searchCmd(options, cmd) {
           if (options.deep) {
             options.id = ad['id'];
             const url = buildURL(options, cmd, 'listing');
+            if (SHUTDOWN)
+              return;
             const text = tapFetchSync(url);
             const $ = cheerio.load(text);
             let selector = $('#bottom_section > #general_specs > p');
