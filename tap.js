@@ -128,13 +128,14 @@ function tapFetchSync(url) {
       resp = fetchSync(url);
       if (resp.status === 200)
         return resp.text();
-      sleep(TAP_RETRY_MS);
     } catch (err) {
-      shutdown(err);
+      if (i === TAP_MAX_RETRIES)
+        logger.error(err);
     }
+    sleep(TAP_RETRY_MS);
   }
 
-  logger.warn(`could not fetch '${url}': ${resp.status} - ${resp.statusText}`);
+  logger.warn(`could not fetch '${url}': ${resp?.status} - ${resp?.statusText}`);
   return "";
 }
 
