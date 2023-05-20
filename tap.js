@@ -40,7 +40,7 @@ function parseRange(range) {
     min = rangeSplit[0];
     max = rangeSplit[1];
   } else {
-    logger.warn(`invalid range format for ${range}`);
+    logger.error(`invalid range format for ${range}`);
   }
   return [min, max];
 }
@@ -135,7 +135,7 @@ function tapFetchSync(url) {
     sleep(TAP_RETRY_MS);
   }
 
-  logger.warn(`could not fetch '${url}': ${resp?.status} - ${resp?.statusText}`);
+  logger.error(`could not fetch '${url}': ${resp?.status} - ${resp?.statusText}`);
   return "";
 }
 
